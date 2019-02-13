@@ -79,15 +79,16 @@ class Environment:
         neighbors = {}
         if row-1>0:
             neighbors[(row-1,col)] = self.grid[row-1][col]
-        if row+1<self.size-1:
+        if row+1<self.size:
             neighbors[(row+1,col)] = self.grid[row+1][col]
         if col-1>0:
             neighbors[(row,col-1)] = self.grid[row][col-1]
-        if col+1<self.size-1:
+        if col+1<self.size:
             neighbors[(row,col+1)] = self.grid[row][col+1]
         return neighbors
     
     def manhattan_distance(self, row1, col1, row2, col2):
         return abs(row1-row2) + abs(col1-col2)
 
-    
+    def change_block(self, row, col):
+        self.grid[row][col] = -10

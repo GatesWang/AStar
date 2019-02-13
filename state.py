@@ -1,12 +1,13 @@
+import math
+
 class State:
     def __init__(self, row, col):
         self.row = row
         self.col = col
-        self.search = 0
-        self.g = 0
+        self.g = math.inf
         self.f = 0
         self.h = 0
-        self.tree = None
+        self.parent = None
 
     #setters
     def set_g(self, g):
@@ -21,12 +22,9 @@ class State:
         self.g = g
         self.h = h
         self.f = g + h
-
-    def set_search(self, search):
-        self.search = search
         
-    def set_tree(self, tree):
-        self.tree = tree
+    def set_parent(self, parent):
+        self.parent = parent
     
     #getters
     def get_location(self):
@@ -40,20 +38,18 @@ class State:
     
     def get_f(self):
         return self.f
-    
-    def get_search(self):
-        return self.search
 
-    def get_tree(self):
-        return self.tree
+    def get_parent(self):
+        return self.parent
 
     #override some methods
     def __lt__(self, other):
         return self.f < other.f
 
-    def __eq__(self, other):
-        return self.get_location() == other.get_location()
-
     def __str__(self):
+        rep = "(" + str(self.row) + "," + str(self.col) + ") " + str(self.f)
+        return rep
+
+    def __repr__(self):
         rep = "(" + str(self.row) + "," + str(self.col) + ") " + str(self.f)
         return rep

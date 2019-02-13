@@ -4,15 +4,17 @@ import pickle
 
 class Driver:
     #loads the mazes
-    def __init__(self, size):
+    def __init__(self, size, name):
         self.start = (0,0)
-        self.size = 11
         self.target = (size-1,size-1)
-        #with open('mazes.pkl', 'rb') as f:
-        #    self.env_list = pickle.load(f)
-            
-    #generates the mazes, should not need to run
-    def generate_mazes(self, name):
+        self.size = size
+        self.name = name
+        self.target = (size-1,size-1)
+        self.generate_mazes()
+        with open(self.name + '.pkl', 'rb') as f:
+            self.env_list = pickle.load(f)
+    
+    def generate_mazes(self):
         env_list = []
         for i in range(0,50):
             env = Environment(self.start[0],
@@ -22,11 +24,12 @@ class Driver:
                               self.size)
             env_list.append(env)
             
-        with open(name + '.pkl', 'wb') as f:
+        with open(self.name + '.pkl', 'wb') as f:
             pickle.dump(env_list, f)
 
-    def show_mazes(self, name):
-        with open(name + '.pkl', 'rb') as f:
+    #shows the mazes, should not need to run
+    def show_mazes(self):
+        with open(self.name + '.pkl', 'rb') as f:
             self.env_list = pickle.load(f)
             for env in self.env_list:
                 env.show_grid()
@@ -35,18 +38,21 @@ class Driver:
     def run_agent(self, i):
         start = self.start
         target = self.target
+        env = self.env_list[i]
+        env.show_grid()
         agent = Agent(start[0],
                       start[1],
                       target[0],
-                      target[1])
+                      target[1],
+                      env)
         
-        env = self.env_list[i]        
-        agent.a_star_search(env)
+        agent.a_star_search()
+        agent.color_grid()
+        env.show_grid()
 
-driver = Driver(11)
-driver.generate_mazes("test2")
-driver.show_mazes("test2")
-#driver.run_agent(0)
+        
+driver = Driver(100, "100x100")
+driver.run_agent(0)
 
     
     
