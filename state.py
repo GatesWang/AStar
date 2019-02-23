@@ -7,9 +7,10 @@ class State:
         self.g = math.inf
         self.f = 0
         self.h = 0
+        self.h_new = 0 
         self.parent = None
 
-    #setters
+    #setters 
     def set_g(self, g):
         self.g = g
         self.f = self.g+self.h

@@ -21,10 +21,10 @@ class Agent:
                                                                                     self.target_row,
                                                                                     self.target_col))
         heapq.heappush(self.open_list, self.current_state)
-    
-    def a_star_search(self):
+        
+    def a_star_search(self, adaptive=False):
         while True:
-            self.expand_lowest()
+            self.expand_lowest(adaptive)
             if self.current_state.get_location() == self.goal_state.get_location():
                 print("found path")
                 return
@@ -32,7 +32,7 @@ class Agent:
                 print("no path")
                 return
         
-    def expand_lowest(self):
+    def expand_lowest(self, adaptive=False):
         s = heapq.heappop(self.open_list)
         #print(s)
         self.current_state = s
