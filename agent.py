@@ -12,8 +12,14 @@ class Agent:
         
         self.open_list = []
         self.closed_list = []
+        self.iterations = 0
+        #print(self.start_row,self.start_col)
+        
+    def a_star_search(self):
+        
         self.current_state = State(self.start_row, self.start_col)
         self.goal_state = State(self.target_row, self.target_col)
+
 
         self.current_state.set_g(0)
         self.current_state.set_f(self.current_state.g,  self.env.manhattan_distance(self.start_row,
@@ -21,18 +27,17 @@ class Agent:
                                                                                     self.target_row,
                                                                                     self.target_col))
         heapq.heappush(self.open_list, self.current_state)
-        
-    def a_star_search(self, adaptive=False):
         while True:
-            self.expand_lowest(adaptive)
+            self.iterations+=1
+            self.expand_lowest()
             if self.current_state.get_location() == self.goal_state.get_location():
-                print("found path")
+                print("found path, # iterations: " + str(self.iterations))
                 return
             if len(self.open_list)==0:
-                print("no path")
+                print("no path # iterations: " + str(self.iterations))
                 return
         
-    def expand_lowest(self, adaptive=False):
+    def expand_lowest(self):
         s = heapq.heappop(self.open_list)
         #print(s)
         self.current_state = s
@@ -70,6 +75,7 @@ class Agent:
     def color_grid(self):
         state = self.current_state
         while state.get_parent() != None:
+            #print(state.get_parent().get_location())
             row, col = state.get_location()
             self.env.change_block(row,col)
             state = state.get_parent()

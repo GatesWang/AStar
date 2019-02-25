@@ -14,7 +14,7 @@ class Environment:
         self.size = size
 
         self.generate_grid()
-
+        
     def generate_grid(self):
         stack = []
         self.grid = np.zeros((self.size,self.size))
@@ -60,12 +60,13 @@ class Environment:
                     visited[neighbor] = 1
                     visited_count+=1
 
-        self.grid[self.start_row][self.start_col] = -10
+        self.grid[self.start_row][self.start_col] = 10
         self.grid[self.target_row][self.target_col] = 10
+        self.grid_copy = np.copy(self.grid)
         
     def show_grid(self):
-        cmap = mpl.colors.ListedColormap(['red','white','black','blue'])
-        bounds=[-20, -1, .5, 1.5, 20]
+        cmap = mpl.colors.ListedColormap(['white','black','blue'])
+        bounds=[-1, .5, 1.5, 20]
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
         img = pyplot.imshow(self.grid,
                             interpolation='nearest',
@@ -77,11 +78,11 @@ class Environment:
         row = block[0]
         col = block[1]
         neighbors = {}
-        if row-1>0:
+        if row-1>=0:
             neighbors[(row-1,col)] = self.grid[row-1][col]
         if row+1<self.size:
             neighbors[(row+1,col)] = self.grid[row+1][col]
-        if col-1>0:
+        if col-1>=0:
             neighbors[(row,col-1)] = self.grid[row][col-1]
         if col+1<self.size:
             neighbors[(row,col+1)] = self.grid[row][col+1]
@@ -89,6 +90,9 @@ class Environment:
     
     def manhattan_distance(self, row1, col1, row2, col2):
         return abs(row1-row2) + abs(col1-col2)
-
+    
+    def reset_grid(self):
+        self.grid = self.grid_copy
+        
     def change_block(self, row, col):
-        self.grid[row][col] = -10
+        self.grid[row][col] = 10

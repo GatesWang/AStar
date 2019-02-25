@@ -9,11 +9,10 @@ class Driver:
         self.target = (size-1,size-1)
         self.size = size
         self.name = name
-        self.target = (size-1,size-1)
-        self.generate_mazes()
+        #self.generate_mazes()
         with open(self.name + '.pkl', 'rb') as f:
             self.env_list = pickle.load(f)
-    
+
     def generate_mazes(self):
         env_list = []
         for i in range(0,50):
@@ -39,7 +38,9 @@ class Driver:
         start = self.start
         target = self.target
         env = self.env_list[i]
-        env.show_grid()
+        #env.show_grid()
+        print("forward")
+        #foward
         agent = Agent(start[0],
                       start[1],
                       target[0],
@@ -48,11 +49,26 @@ class Driver:
         
         agent.a_star_search()
         agent.color_grid()
-        env.show_grid()
+        #env.show_grid()
+        env.reset_grid()
 
+        print("backward")
+        #backward
+        agent = Agent(target[0],
+                      target[1],
+                      start[0],
+                      start[1],
+                      env)
+        #env.show_grid()
+        agent.a_star_search()
+        agent.color_grid()
+        #env.show_grid()
+        env.reset_grid()
         
 driver = Driver(100, "100x100")
-driver.run_agent(0)
+for i in range(0,50):
+    driver.run_agent(i)
+
 
     
     
