@@ -1,6 +1,8 @@
 from environment import Environment
 from agent import Agent
 import pickle
+import os.path
+
 
 class Driver:
     #loads the mazes
@@ -9,9 +11,14 @@ class Driver:
         self.target = (size-1,size-1)
         self.size = size
         self.name = name
-        #self.generate_mazes()
-        with open(self.name + '.pkl', 'rb') as f:
-            self.env_list = pickle.load(f)
+        self.env_list = []
+        
+        if os.path.isfile(self.name + '.pkl'):
+            with open(self.name + '.pkl', 'rb') as f:
+                self.env_list = pickle.load(f)  
+        else:
+            self.generate_mazes()
+
 
     def generate_mazes(self):
         env_list = []
@@ -47,9 +54,9 @@ class Driver:
                       target[1],
                       env)
         
-        agent.a_star_search()
+        agent.forward_a_star_search()
         agent.color_grid()
-        #env.show_grid()
+        env.show_grid()
         env.reset_grid()
 
         print("backward")
@@ -59,10 +66,11 @@ class Driver:
                       start[0],
                       start[1],
                       env)
+        
         #env.show_grid()
-        agent.a_star_search()
+        agent.forward_a_star_search()
         agent.color_grid()
-        #env.show_grid()
+        env.show_grid()
         env.reset_grid()
         
 driver = Driver(100, "100x100")
