@@ -15,7 +15,7 @@ class Agent:
         self.iterations = 0
         #print(self.start_row,self.start_col)
         
-    def a_star_search(self):
+    def forward_a_star_search(self):
         
         self.current_state = State(self.start_row, self.start_col)
         self.goal_state = State(self.target_row, self.target_col)
@@ -32,12 +32,14 @@ class Agent:
             self.expand_lowest()
             if self.current_state.get_location() == self.goal_state.get_location():
                 print("found path, # iterations: " + str(self.iterations))
+                print(self.current_state.g)
                 return
             if len(self.open_list)==0:
                 print("no path # iterations: " + str(self.iterations))
+                print(self.current_state.g)
                 return
         
-    def expand_lowest(self):
+    def compute_path(self):
         s = heapq.heappop(self.open_list)
         #print(s)
         self.current_state = s
@@ -46,17 +48,16 @@ class Agent:
         
         if s not in self.closed_list:
             self.closed_list.append(s.get_location())          
-            neighbors = self.env.get_neighbors(s.get_location())
+            successors = self.env.get_neighbors(s.get_location())
 
             #print(neighbors)
-            for neighbor in neighbors:
-                
+            for succ in successors:
                 if neighbor not in self.closed_list:
-                    if neighbors[neighbor] == 0 or neighbors[neighbor] == 10:
+                    if successors[succ] == 0 or successors[succ] == 10:
                         #either get reference to neighbor_state in open list or create new 
-                        neighbor_state = State(neighbor[0],neighbor[1])
+                        neighbor_state = State(succ[0],succ[1])
                         for state in self.open_list:
-                            if state.get_location() == neighbor:
+                            if state.get_location() == succ:
                                 neighbor_state = state
                                 break;
                             
