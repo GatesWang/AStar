@@ -21,7 +21,6 @@ class Driver:
 
 
     def generate_mazes(self):
-        env_list = []
         for i in range(0,50):
             env = Environment(self.start[0],
                               self.start[1],
@@ -32,6 +31,8 @@ class Driver:
             
         with open(self.name + '.pkl', 'wb') as f:
             pickle.dump(env_list, f)
+        with open(self.name + '.pkl', 'rb') as f:
+            self.env_list = pickle.load(f) 
 
     #shows the mazes, should not need to run
     def show_mazes(self):
