@@ -1,83 +1,75 @@
-from environment import Environment
+from map import Map
 from agent import Agent
-import pickle
-import os.path
-
 
 class Driver:
-    #loads the mazes
-    def __init__(self, size, name):
-        self.start = (0,0)
-        self.target = (size-1,size-1)
-        self.size = size
-        self.name = name
-        self.env_list = []
-        
-        if os.path.isfile(self.name + '.pkl'):
-            with open(self.name + '.pkl', 'rb') as f:
-                self.env_list = pickle.load(f)  
-        else:
-            self.generate_mazes()
+    def __init__(self, num_maps, num_start_goal):
+        self.num_maps = num_maps
+        self.num_start_goal = num_start_goal
 
+    def generate_maps(self):
+        self.maps = []
+        size = (120, 160)
+        for i in range(self.num_maps):
+            self.maps.append(Map(size))
 
-    def generate_mazes(self):
-        for i in range(0,50):
-            env = Environment(self.start[0],
-                              self.start[1],
-                              self.target[0],
-                              self.target[1],
-                              self.size)
-            env_list.append(env)
-            
-        with open(self.name + '.pkl', 'wb') as f:
-            pickle.dump(env_list, f)
-        with open(self.name + '.pkl', 'rb') as f:
-            self.env_list = pickle.load(f) 
+    def map_to_text_file(self):
+        for i in range(self.num_maps):
+            self.print_map(i)
+            self.print_map_versions(i)
 
-    #shows the mazes, should not need to run
-    def show_mazes(self):
-        with open(self.name + '.pkl', 'rb') as f:
-            self.env_list = pickle.load(f)
-            for env in self.env_list:
-                env.show_grid()
-            
-    #creates a new agent and runs it on env_list[i]
-    def run_agent(self, i):
-        start = self.start
-        target = self.target
-        env = self.env_list[i]
-        #env.show_grid()
-        print("forward")
-        #foward
-        agent = Agent(start[0],
-                      start[1],
-                      target[0],
-                      target[1],
-                      env)
-        
-        agent.forward_a_star_search()
-        agent.color_grid()
-        env.show_grid()
-        env.reset_grid()
+    def print_map(self, i):
+        name = "map" + str(i)
+        f = open(name, 'w')
+        map = self.maps[i]
 
-        print("backward")
-        #backward
-        agent = Agent(target[0],
-                      target[1],
-                      start[0],
-                      start[1],
-                      env)
-        
-        #env.show_grid()
-        agent.forward_a_star_search()
-        agent.color_grid()
-        env.show_grid()
-        env.reset_grid()
-        
-driver = Driver(100, "100x100")
-for i in range(0,50):
-    driver.run_agent(i)
+        for center in map.hard_centers:
+            f.write(str(center) + "\n")
 
+        for i in range(map.max_row+1):
+            for j in range(map.max_col+1):
+                value = map.get_block()
+                default = '1'
+                out = map.get(value, default) + ' '
+                f.write(out)
+            f.write("\n")
 
-    
-    
+    def print_map_versions(self, i):
+        map = self.maps[i]
+
+        for j in range(self.num_start_goal):
+            map.generate_start_and_end()
+            start, target = map.start, map.target
+            name = "map" + str(i) + "_version_" + str(j)
+
+            f = open(name, 'w')
+            f.write(str(start) + "\n")
+            f.write(str(target) + "\n")
+
+    def text_files_to_map(self):
+        for i in range(self.num_maps):
+            name = "map" + str(i)
+            self.read_map(name)
+
+            for j in range(self.num_start_goal):
+                name = "map" + str(i) + "_version_" + str(j)
+
+    def run_agents(self):
+        for map in self.maps:
+            for j in range(self.num_start_goal):
+                map.generate_start_and_end()
+                start, target = map.start, map.target
+                weights = [0, 1, 1.2, 2] #0 corresponds to uniform, 1 corresponds to a_star
+                for weight in weights:
+                    agent = Agent(start, target, map, weight)
+                    agent.search()
+                    agent.color_grid()
+
+                    map.show_grid()
+                    map.reset_grid()
+
+driver = Driver(1,2)
+driver.generate_maps()
+driver.map_to_text_file()
+driver.text_files_to_map()
+
+#driver.run_agents()

@@ -1,42 +1,42 @@
 import math
 
 class State:
-    def __init__(self, row, col):
-        self.row = row
-        self.col = col
+    def __init__(self, block):
+        self.row, self.col = block[0], block[1]
         self.g = math.inf
         self.f = 0
         self.h = 0
-        self.h_new = 0 
+        self.h_new = 0
         self.parent = None
 
-    #setters 
+    #setters
     def set_g(self, g):
         self.g = g
         self.f = self.g+self.h
-    
+
     def set_h(self, h):
         self.h = h
         self.f = self.g+self.h
-        
+
     def set_f(self, g, h):
         self.g = g
         self.h = h
         self.f = g + h
-        
+
     def set_parent(self, parent):
         self.parent = parent
-    
+        
+
     #getters
     def get_location(self):
         return (self.row, self.col)
-    
+
     def get_g(self):
         return self.g
-    
+
     def get_h(self):
         return self.h
-    
+
     def get_f(self):
         return self.f
 
